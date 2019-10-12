@@ -8,18 +8,32 @@ class TodoList extends Component {
         super(props);
         this.state = store.getState()
     }
+
     render() { 
+        let {inputValue,inputChange,addItem,deleteItem} = this.props
+
         return (  
             <div>
                 <div>
                     <input 
-                        value={this.props.inputValue}
-                        onChange = {this.props.inputChange}
+                        value={inputValue}
+                        onChange = {inputChange}
                     />
-                    <button>提交</button>
+                    <button
+                        onClick = {addItem}
+                    >提交</button>
                 </div>
                 <ul>
-                    
+                    {
+                        this.props.list.map((item,index)=>{
+                            return(
+                                <li 
+                                    key = {index}
+                                    onClick = {deleteItem.bind(this,index)}
+                                >{item}</li>
+                            )
+                        })
+                    }
                 </ul>
             </div>
         );
@@ -28,7 +42,8 @@ class TodoList extends Component {
  
 const stateToProps = (state)=>{
     return{
-        inputValue:state.inputValue
+        inputValue:state.inputValue,
+        list:state.list
     }
 }
 
@@ -38,6 +53,19 @@ const dispatchToProps = (dispatch)=>{
             let action = {
                 type:'change_input',
                 value:e.target.value
+            }
+            dispatch(action)
+        },
+        addItem(){
+            let action = {
+                type:'add_item'
+            }
+            dispatch(action)
+        },
+        deleteItem(index){
+            let action = {
+                type:'delete_item',
+                index:index
             }
             dispatch(action)
         }
